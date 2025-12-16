@@ -1,0 +1,97 @@
+/**
+ * 全局样式文件
+ *
+ * @说明
+ * 这个文件定义了整个应用的全局样式,包括:
+ * 1. Tailwind 基础样式
+ * 2. CSS 变量 (用于主题切换)
+ * 3. 自定义全局样式
+ *
+ * @技术原理
+ * - @layer base: Tailwind 的基础层,用于重置样式和默认样式
+ * - CSS 变量: 使用 HSL 颜色空间,方便主题切换
+ * - :root: 亮色主题
+ * - .dark: 暗色主题
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * 主题颜色配置
+ *
+ * @说明
+ * 使用 CSS 变量定义颜色,方便主题切换
+ * HSL 格式: hsl(色相 饱和度 亮度)
+ *
+ * @技术原理
+ * - 只需要改变 CSS 变量的值,所有使用该变量的地方都会更新
+ * - 配合 Tailwind 的 `hsl(var(--variable))` 语法使用
+ *
+ * @最佳实践
+ * - 亮色主题: 使用高亮度 (L: 90-100)
+ * - 暗色主题: 使用低亮度 (L: 10-20)
+ */
+
+@layer base {
+  :root {
+    /* 亮色主题 */
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* 暗色主题 */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+/**
+ * 全局基础样式
+ */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
