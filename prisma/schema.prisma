@@ -1,0 +1,156 @@
+// Prisma Schema 文件
+// 这个文件定义了数据库的数据模型和配置
+
+// 数据源配置
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Prisma Client 生成器配置
+generator client {
+  provider = "prisma-client-js"
+}
+
+// User 模型 - 用户表
+// 字段: id, name, email, password, role, createdAt, updatedAt
+// 关系: accounts, sessions, posts
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  role          Role      @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts Account[]
+  sessions Session[]
+  posts    Post[]
+
+  @@index([email])
+}
+
+// Role 枚举 - 用户角色
+// USER: 普通用户, ADMIN: 管理员
+enum Role {
+  USER
+  ADMIN
+}
+
+// Account 模型 - 第三方登录账户
+// 用于 NextAuth.js 的 OAuth 登录
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+// Session 模型 - 用户会话
+// 用于 NextAuth.js 的数据库会话策略
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// VerificationToken 模型 - 验证令牌
+// 用于邮箱验证、密码重置等
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Category 模型 - 文章分类
+// 一级分类,例如: 技术、生活、随笔
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  posts Post[]
+
+  @@index([slug])
+}
+
+// Tag 模型 - 文章标签
+// 用于更细粒度的分类
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  posts PostTag[]
+
+  @@index([slug])
+}
+
+// Post 模型 - 文章
+// 核心数据模型,存储博客文章
+model Post {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  content     String    @db.Text
+  excerpt     String?   @db.Text
+  coverImage  String?
+  published   Boolean   @default(false)
+  views       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  tags       PostTag[]
+
+  @@index([slug])
+  @@index([published])
+  @@index([createdAt])
+  @@index([authorId])
+  @@index([categoryId])
+}
+
+// PostTag 模型 - 文章标签关联表
+// 实现文章和标签的多对多关系
+model PostTag {
+  postId String
+  tagId  String
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([postId, tagId])
+  @@index([postId])
+  @@index([tagId])
+}
