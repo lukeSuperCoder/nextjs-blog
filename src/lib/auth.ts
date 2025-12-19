@@ -30,10 +30,8 @@
 
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
-import type { Adapter } from 'next-auth/adapters'
 
 /**
  * NextAuth 配置选项
@@ -46,9 +44,12 @@ import type { Adapter } from 'next-auth/adapters'
  * - callbacks: 回调函数 (扩展默认行为)
  */
 export const authOptions: NextAuthOptions = {
-  // Prisma 适配器
-  // 自动同步用户、账户、会话到数据库
-  adapter: PrismaAdapter(prisma) as Adapter,
+  // NextAuth 密钥 (必须设置)
+  secret: process.env.NEXTAUTH_SECRET,
+
+  // 注意: 使用 JWT 策略时不能使用 adapter
+  // adapter 用于 database 策略
+  // adapter: PrismaAdapter(prisma) as Adapter,
 
   // 认证提供商
   providers: [
@@ -147,18 +148,11 @@ export const authOptions: NextAuthOptions = {
   /**
    * JWT 配置
    *
-   * @secret
-   * - 用于加密 JWT 的密钥
-   * - 必须是强随机字符串
-   * - 生成方式: openssl rand -base64 32
-   *
    * @maxAge
    * - JWT 最大有效期 (秒)
+   * - 应该和 session maxAge 一致
    */
-  jwt: {
-    secret: process.env.NEXTAUTH_SECRET,
-    maxAge: 30 * 24 * 60 * 60,
-  },
+  // 不需要单独配置 jwt,使用顶层 secret 即可
 
   /**
    * 自定义页面路径
