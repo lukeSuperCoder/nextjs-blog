@@ -1,91 +1,134 @@
 /**
- * 首页组件
+ * 首页
  *
  * @说明
- * 这是应用的首页 (对应路由: /)
- * 展示当前登录状态和基本信息
+ * 博客首页,展示最新文章列表
  *
  * @技术原理 - Next.js App Router
- * 1. page.tsx 定义路由页面
- * 2. 文件系统路由: src/app/page.tsx -> /
- * 3. 这是一个 Server Component,可以直接访问数据库
+ * 1. 这是一个 Server Component
+ * 2. 直接在服务器端查询数据库
+ * 3. 自动实现 SSR (服务器端渲染)
+ * 4. 支持 ISR (增量静态再生成)
+ *
+ * @功能
+ * - 显示最新发布的文章
+ * - 分页功能
+ * - 响应式布局
  */
 
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { getCurrentUser } from '@/lib/session'
-import { LogoutButton } from '@/components/logout-button'
+import { Navbar } from '@/components/navbar'
+import { PostCard } from '@/components/post-card'
+import { prisma } from '@/lib/prisma'
+
+/**
+ * 获取文章列表
+ *
+ * @说明
+ * 从数据库查询已发布的文章
+ *
+ * @技术细节
+ * 1. 使用 Prisma Client 查询
+ * 2. 包含关联数据 (分类、标签、作者)
+ * 3. 按发布时间倒序排列
+ * 4. 只返回已发布的文章
+ *
+ * @参数
+ * - page: 页码 (默认 1)
+ * - pageSize: 每页数量 (默认 10)
+ */
+async function getPosts(page = 1, pageSize = 10) {
+  const skip = (page - 1) * pageSize
+
+  const [posts, total] = await Promise.all([
+    // 查询文章列表
+    prisma.post.findMany({
+      where: {
+        published: true, // 只查询已发布的文章
+      },
+      include: {
+        category: {
+          select: {
+            name: true,
+            slug: true,
+          },
+        },
+        tags: {
+          include: {
+            tag: {
+              select: {
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        publishedAt: 'desc', // 按发布时间倒序
+      },
+      skip,
+      take: pageSize,
+    }),
+
+    // 查询总数 (用于分页)
+    prisma.post.count({
+      where: {
+        published: true,
+      },
+    }),
+  ])
+
+  return { posts, total, totalPages: Math.ceil(total / pageSize) }
+}
 
 export default async function Home() {
-  // 获取当前用户 (服务器端)
-  const user = await getCurrentUser()
+  // 获取文章数据
+  const { posts } = await getPosts()
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="text-center space-y-8">
-        <h1 className="text-4xl font-bold mb-4">Next.js Blog</h1>
+    <div className="min-h-screen bg-background">
+      {/* 导航栏 */}
+      <Navbar />
 
-        {user ? (
-          // 已登录状态
-          <div className="space-y-4">
-            <p className="text-lg text-muted-foreground">
-              欢迎回来, <span className="font-semibold text-foreground">{user.name}</span>!
-            </p>
-            <div className="flex flex-col items-center gap-2">
-              <p className="text-sm text-muted-foreground">
-                邮箱: {user.email}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                角色: {user.role === 'ADMIN' ? '管理员' : '普通用户'}
-              </p>
-            </div>
-            <div className="flex gap-4 justify-center">
-              <Button asChild>
-                <Link href="/dashboard">进入后台</Link>
-              </Button>
-              <LogoutButton />
-            </div>
+      {/* 主内容区 */}
+      <main className="container mx-auto px-4 py-8">
+        {/* 页面标题 */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold tracking-tight">最新文章</h1>
+          <p className="mt-2 text-muted-foreground">
+            分享技术知识和学习心得
+          </p>
+        </div>
+
+        {/* 文章列表 */}
+        {posts.length > 0 ? (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
+            ))}
           </div>
         ) : (
-          // 未登录状态
-          <div className="space-y-6">
-            <p className="text-lg text-muted-foreground mb-8">
-              项目初始化完成!开始构建你的博客系统
+          // 空状态
+          <div className="flex min-h-[400px] flex-col items-center justify-center rounded-lg border border-dashed">
+            <p className="text-lg text-muted-foreground">还没有文章</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              快去后台发布第一篇文章吧！
             </p>
-
-            <div className="flex gap-4 justify-center mb-8">
-              <Button asChild size="lg">
-                <Link href="/login">登录</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg">
-                <Link href="/register">注册</Link>
-              </Button>
-            </div>
-
-            <div className="flex gap-4 justify-center">
-              <div className="p-6 border rounded-lg">
-                <h2 className="text-xl font-semibold mb-2">✅ 项目初始化</h2>
-                <p className="text-sm text-muted-foreground">Next.js + TypeScript</p>
-              </div>
-
-              <div className="p-6 border rounded-lg">
-                <h2 className="text-xl font-semibold mb-2">✅ 样式配置</h2>
-                <p className="text-sm text-muted-foreground">Tailwind CSS</p>
-              </div>
-
-              <div className="p-6 border rounded-lg">
-                <h2 className="text-xl font-semibold mb-2">✅ 数据库</h2>
-                <p className="text-sm text-muted-foreground">Prisma + PostgreSQL</p>
-              </div>
-            </div>
-
-            <div className="mt-8 p-6 border rounded-lg">
-              <h2 className="text-xl font-semibold mb-2">✅ 认证系统</h2>
-              <p className="text-sm text-muted-foreground">NextAuth.js 配置完成</p>
-            </div>
           </div>
         )}
-      </div>
-    </main>
+      </main>
+
+      {/* 页脚 */}
+      <footer className="mt-auto border-t py-6">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          <p>© 2024 Next.js Blog. 使用 Next.js 14 构建.</p>
+        </div>
+      </footer>
+    </div>
   )
 }
