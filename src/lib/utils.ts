@@ -87,3 +87,23 @@ import { twMerge } from 'tailwind-merge'
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+/**
+ * 格式化日期
+ *
+ * @param date - 日期字符串或 Date 对象
+ * @param locale - 目标语言区域,默认中文
+ * @returns 格式化后的日期字符串
+ */
+export function formatDate(
+  date: string | number | Date,
+  locale: string = 'zh-CN'
+): string {
+  const target = date instanceof Date ? date : new Date(date)
+
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(target)
+}

@@ -152,7 +152,8 @@ async function main() {
 3. 开始创建你的第一篇文章!
 
 祝你使用愉快! 🎉`,
-      published: true,
+      status: 'published',
+      likes: 42,
       publishedAt: new Date(),
       authorId: admin.id,
       categoryId: categories[0].id, // 技术分类
@@ -254,7 +255,8 @@ export default async function Page() {
 ## 总结
 
 Next.js 让全栈开发变得简单! 开始构建你的应用吧! 🚀`,
-      published: true,
+      status: 'published',
+      likes: 27,
       publishedAt: new Date(),
       authorId: admin.id,
       categoryId: categories[2].id, // 教程分类

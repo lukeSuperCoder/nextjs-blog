@@ -82,7 +82,7 @@ async function main() {
       console.log(`   分类: ${post.category.name}`)
       console.log(`   标签: ${post.tags.map((pt) => pt.tag.name).join(', ')}`)
       console.log(`   浏览: ${post.views} 次`)
-      console.log(`   状态: ${post.published ? '✅ 已发布' : '📝 草稿'}`)
+      console.log(`   状态: ${post.status === 'published' ? '✅ 已发布' : '📝 草稿'}`)
     })
 
     console.log('\n\n✅ 数据库测试完成!')

@@ -120,10 +120,14 @@ model Post {
   title       String
   slug        String    @unique
   content     String    @db.Text
-  excerpt     String?   @db.Text
-  coverImage  String?
-  published   Boolean   @default(false)
+  excerpt     String?   @db.VarChar(500)
+  coverImage  String?   @db.VarChar(500)
+  status      String    @default("draft")
   views       Int       @default(0)
+  likes       Int       @default(0)
+  metaTitle       String?  @db.VarChar(100)
+  metaDescription String?  @db.VarChar(200)
+  metaKeywords    String?  @db.VarChar(200)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   publishedAt DateTime?
@@ -135,8 +139,9 @@ model Post {
   tags       PostTag[]
 
   @@index([slug])
-  @@index([published])
+  @@index([status])
   @@index([createdAt])
+  @@index([publishedAt])
   @@index([authorId])
   @@index([categoryId])
 }

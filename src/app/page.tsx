@@ -43,7 +43,7 @@ async function getPosts(page = 1, pageSize = 10) {
     // 查询文章列表
     prisma.post.findMany({
       where: {
-        published: true, // 只查询已发布的文章
+        status: 'published', // 只查询已发布的文章
       },
       include: {
         category: {
@@ -78,7 +78,7 @@ async function getPosts(page = 1, pageSize = 10) {
     // 查询总数 (用于分页)
     prisma.post.count({
       where: {
-        published: true,
+        status: 'published',
       },
     }),
   ])
