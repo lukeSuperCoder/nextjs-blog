@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import { PostForm } from '@/components/dashboard/post-form'
 import { updatePost } from '@/app/(dashboard)/dashboard/posts/actions'
+import { BackButton } from '@/components/navigation/back-button'
 
 interface PageProps {
   params: Promise<{
@@ -33,6 +34,7 @@ export default async function EditPostPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
+      <BackButton label="返回文章管理" fallbackHref="/dashboard/posts" className="-ml-2" />
       <div>
         <h1 className="text-3xl font-bold">编辑文章</h1>
         <p className="text-muted-foreground">{post.title}</p>
@@ -57,4 +59,3 @@ export default async function EditPostPage({ params }: PageProps) {
     </div>
   )
 }
-

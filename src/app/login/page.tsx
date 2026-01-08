@@ -33,6 +33,7 @@ import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { BackButton } from '@/components/navigation/back-button'
 
 /**
  * 表单验证 Schema
@@ -119,6 +120,10 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-md space-y-8">
+        <div>
+          <BackButton label="返回首页" fallbackHref="/" className="-ml-2" />
+        </div>
+
         {/* 标题 */}
         <div className="text-center">
           <h1 className="text-3xl font-bold tracking-tight">登录</h1>

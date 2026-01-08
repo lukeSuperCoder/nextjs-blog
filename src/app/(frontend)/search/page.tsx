@@ -5,11 +5,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { ArrowLeft, Search } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { BackButton } from '@/components/navigation/back-button'
 import { PostCard, type PostCardPost } from '@/components/post-card'
 
 export default function SearchPage() {
@@ -55,12 +54,7 @@ export default function SearchPage() {
     <div className="container py-12">
       <div className="mx-auto max-w-3xl space-y-8">
         <div>
-          <Button asChild variant="ghost" className="-ml-2">
-            <Link href="/" className="flex items-center gap-2">
-              <ArrowLeft className="h-4 w-4" />
-              返回首页
-            </Link>
-          </Button>
+          <BackButton label="返回首页" fallbackHref="/" className="-ml-2" />
         </div>
 
         <div>

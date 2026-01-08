@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { PostForm } from '@/components/dashboard/post-form'
 import { createPost } from '@/app/(dashboard)/dashboard/posts/actions'
+import { BackButton } from '@/components/navigation/back-button'
 
 export default async function NewPostPage() {
   const categories = await prisma.category.findMany({
@@ -11,6 +12,7 @@ export default async function NewPostPage() {
   if (categories.length === 0) {
     return (
       <div className="space-y-2">
+        <BackButton label="返回文章管理" fallbackHref="/dashboard/posts" className="-ml-2" />
         <h1 className="text-3xl font-bold">新建文章</h1>
         <p className="text-muted-foreground">请先创建分类（文章必须绑定分类）</p>
       </div>
@@ -19,6 +21,7 @@ export default async function NewPostPage() {
 
   return (
     <div className="space-y-6">
+      <BackButton label="返回文章管理" fallbackHref="/dashboard/posts" className="-ml-2" />
       <div>
         <h1 className="text-3xl font-bold">新建文章</h1>
         <p className="text-muted-foreground">创建一篇新的博客文章</p>

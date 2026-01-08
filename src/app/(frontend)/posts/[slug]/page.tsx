@@ -1,15 +1,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 
 import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
 import { MarkdownRenderer } from '@/components/post/markdown-renderer'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { siteConfig } from '@/config/site'
+import { BackButton } from '@/components/navigation/back-button'
 
 interface PageProps {
   params: Promise<{
@@ -166,12 +165,7 @@ export default async function PostPage({ params }: PageProps) {
       <article className="container py-12">
         <div className="mx-auto max-w-3xl">
           <div className="mb-6">
-            <Button asChild variant="ghost" className="-ml-2">
-              <Link href="/" className="flex items-center gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                返回首页
-              </Link>
-            </Button>
+            <BackButton label="返回首页" fallbackHref="/" className="-ml-2" />
           </div>
 
         <header className="mb-8">

@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { deletePost } from '@/app/(dashboard)/dashboard/posts/actions'
+import { BackButton } from '@/components/navigation/back-button'
 import { Edit, Plus, Trash2 } from 'lucide-react'
 
 interface PageProps {
@@ -55,6 +56,8 @@ export default async function PostsListPage({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6">
+      <BackButton label="返回仪表盘" fallbackHref="/dashboard" className="-ml-2" />
+
       <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold">文章管理</h1>
@@ -158,4 +161,3 @@ export default async function PostsListPage({ searchParams }: PageProps) {
     </div>
   )
 }
-

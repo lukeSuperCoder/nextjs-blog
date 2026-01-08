@@ -7,6 +7,7 @@ import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { BackButton } from '@/components/navigation/back-button'
 
 interface PageProps {
   searchParams: Promise<{
@@ -142,6 +143,10 @@ export default async function PostsPage({ searchParams }: PageProps) {
   return (
     <div className="container py-12">
       <div className="mx-auto max-w-4xl">
+        <div className="mb-6">
+          <BackButton label="返回首页" fallbackHref="/" className="-ml-2" />
+        </div>
+
         <div className="mb-8">
           <h1 className="mb-4 text-4xl font-bold">
             {category
