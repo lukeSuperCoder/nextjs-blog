@@ -10,7 +10,6 @@
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import rehypeRaw from 'rehype-raw'
 import 'highlight.js/styles/github-dark.css'
 
 import { cn } from '@/lib/utils'
@@ -23,7 +22,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeHighlight, rehypeRaw]}
+      rehypePlugins={[rehypeHighlight]}
       components={{
         h1({ className, ...props }) {
           return (
@@ -88,8 +87,15 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             />
           )
         },
-        code({ inline, className, children, ...props }) {
-          if (inline) {
+        code({ className, children, ...props }) {
+          const codeText = Array.isArray(children)
+            ? children.join('')
+            : typeof children === 'string'
+              ? children
+              : ''
+          const isInline = !codeText.includes('\n')
+
+          if (isInline) {
             return (
               <code
                 className={cn(

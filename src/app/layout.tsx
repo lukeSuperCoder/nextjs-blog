@@ -23,7 +23,6 @@
  */
 
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { Providers } from '@/components/providers'
 import './globals.css'
 
@@ -40,11 +39,6 @@ import './globals.css'
  * - subsets: 字体子集 (latin: 拉丁字符,包括英文)
  * - variable: CSS 变量名 (可选,用于 Tailwind 配置)
  */
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap', // 字体加载时的显示策略
-})
-
 /**
  * 页面元数据
  *
@@ -98,7 +92,7 @@ export default function RootLayout({
         - 因为主题切换会动态添加 'dark' 类名
         - 服务器渲染和客户端渲染可能不一致
        */}
-      <body className={inter.className} suppressHydrationWarning>
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
         {/* 会话提供者 - 让客户端组件可以使用 useSession */}
         <Providers>
           {/* 页面内容 */}

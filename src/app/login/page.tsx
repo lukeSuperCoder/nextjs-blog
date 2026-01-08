@@ -25,6 +25,7 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -52,8 +53,15 @@ type LoginFormData = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const callbackUrlRaw = searchParams.get('callbackUrl')
+  const callbackUrl =
+    callbackUrlRaw && callbackUrlRaw.startsWith('/') && !callbackUrlRaw.startsWith('//')
+      ? callbackUrlRaw
+      : '/'
 
   /**
    * React Hook Form 配置
@@ -97,11 +105,11 @@ export default function LoginPage() {
         // 登录失败
         setError(result.error)
       } else {
-        // 登录成功,跳转到首页
-        router.push('/')
+        // 登录成功,跳转到 callbackUrl
+        router.push(callbackUrl)
         router.refresh() // 刷新服务器组件
       }
-    } catch (err) {
+    } catch {
       setError('登录失败,请稍后重试')
     } finally {
       setIsLoading(false)

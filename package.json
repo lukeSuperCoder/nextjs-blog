@@ -8,9 +8,9 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",

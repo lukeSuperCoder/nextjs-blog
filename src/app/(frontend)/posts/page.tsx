@@ -9,11 +9,11 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string
     category?: string
     tag?: string
-  }
+  }>
 }
 
 const PAGE_SIZE = 10
@@ -23,10 +23,11 @@ export const revalidate = 60
 export async function generateMetadata({
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const page = Number(searchParams.page) || 1
+  const resolvedSearchParams = await searchParams
+  const page = Number(resolvedSearchParams.page) || 1
   const baseTitle = '文章列表'
   const context =
-    searchParams.category ?? searchParams.tag ?? `第 ${page} 页`
+    resolvedSearchParams.category ?? resolvedSearchParams.tag ?? `第 ${page} 页`
 
   return {
     title: `${baseTitle} - ${context}`,
@@ -131,9 +132,10 @@ function buildQueryString({
 }
 
 export default async function PostsPage({ searchParams }: PageProps) {
-  const page = Math.max(1, Number(searchParams.page) || 1)
-  const category = searchParams.category?.trim()
-  const tag = searchParams.tag?.trim()
+  const resolvedSearchParams = await searchParams
+  const page = Math.max(1, Number(resolvedSearchParams.page) || 1)
+  const category = resolvedSearchParams.category?.trim()
+  const tag = resolvedSearchParams.tag?.trim()
 
   const { posts, pagination } = await getPosts(page, PAGE_SIZE, category, tag)
 

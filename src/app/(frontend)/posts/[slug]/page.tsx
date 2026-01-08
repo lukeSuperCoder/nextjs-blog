@@ -8,9 +8,9 @@ import { MarkdownRenderer } from '@/components/post/markdown-renderer'
 import { Badge } from '@/components/ui/badge'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export const revalidate = 3600
@@ -33,8 +33,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
+  const { slug } = await params
   const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
     select: {
       title: true,
       excerpt: true,
@@ -118,13 +119,14 @@ async function incrementViews(slug: string) {
 }
 
 export default async function PostPage({ params }: PageProps) {
-  const post = await getPost(params.slug)
+  const { slug } = await params
+  const post = await getPost(slug)
 
   if (!post || post.status !== 'published') {
     notFound()
   }
 
-  await incrementViews(params.slug)
+  await incrementViews(slug)
 
   return (
     <article className="container py-12">
