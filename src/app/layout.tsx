@@ -24,6 +24,7 @@
 
 import type { Metadata } from 'next'
 import { Providers } from '@/components/providers'
+import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
 
 /**
@@ -93,11 +94,10 @@ export default function RootLayout({
         - 服务器渲染和客户端渲染可能不一致
        */}
       <body className="min-h-screen antialiased" suppressHydrationWarning>
-        {/* 会话提供者 - 让客户端组件可以使用 useSession */}
-        <Providers>
-          {/* 页面内容 */}
-          {children}
-        </Providers>
+        <ThemeProvider>
+          {/* 会话提供者 - 让客户端组件可以使用 useSession */}
+          <Providers>{children}</Providers>
+        </ThemeProvider>
       </body>
     </html>
   )

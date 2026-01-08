@@ -30,7 +30,7 @@ interface PostCardProps {
     excerpt: string | null
     coverImage: string | null
     views: number
-    publishedAt: Date | null
+    publishedAt: string | Date | null
     category: {
       name: string
       slug: string
@@ -44,7 +44,11 @@ interface PostCardProps {
   }
 }
 
+export type PostCardPost = PostCardProps['post']
+
 export function PostCard({ post }: PostCardProps) {
+  const publishedAt = post.publishedAt ? new Date(post.publishedAt) : null
+
   return (
     <article className="group relative overflow-hidden rounded-lg border bg-card transition-all hover:shadow-lg">
       {/* 封面图 (如果有) */}
@@ -99,11 +103,11 @@ export function PostCard({ post }: PostCardProps) {
         {/* 元信息 */}
         <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
           {/* 发布时间 */}
-          {post.publishedAt && (
+          {publishedAt && (
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              <time dateTime={post.publishedAt.toISOString()}>
-                {formatDistance(post.publishedAt, new Date(), {
+              <time dateTime={publishedAt.toISOString()}>
+                {formatDistance(publishedAt, new Date(), {
                   addSuffix: true,
                   locale: zhCN,
                 })}

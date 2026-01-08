@@ -1,11 +1,14 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { ArrowLeft } from 'lucide-react'
 
 import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
 import { MarkdownRenderer } from '@/components/post/markdown-renderer'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { siteConfig } from '@/config/site'
 
 interface PageProps {
   params: Promise<{
@@ -128,9 +131,48 @@ export default async function PostPage({ params }: PageProps) {
 
   await incrementViews(slug)
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: post.title,
+    description: post.excerpt ?? undefined,
+    image: post.coverImage ?? undefined,
+    datePublished: post.publishedAt?.toISOString(),
+    dateModified: post.updatedAt.toISOString(),
+    author: post.author?.name
+      ? {
+          '@type': 'Person',
+          name: post.author.name,
+        }
+      : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: siteConfig.name,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${siteConfig.url}/posts/${post.slug}`,
+    },
+  }
+
   return (
-    <article className="container py-12">
-      <div className="mx-auto max-w-3xl">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      <article className="container py-12">
+        <div className="mx-auto max-w-3xl">
+          <div className="mb-6">
+            <Button asChild variant="ghost" className="-ml-2">
+              <Link href="/" className="flex items-center gap-2">
+                <ArrowLeft className="h-4 w-4" />
+                返回首页
+              </Link>
+            </Button>
+          </div>
+
         <header className="mb-8">
           {post.category && (
             <Link href={`/posts?category=${post.category.slug}`}>
@@ -189,6 +231,7 @@ export default async function PostPage({ params }: PageProps) {
           </div>
         </footer>
       </div>
-    </article>
+      </article>
+    </>
   )
 }

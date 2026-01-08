@@ -18,9 +18,11 @@
  */
 
 import Link from 'next/link'
+import { Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getCurrentUser } from '@/lib/session'
 import { UserMenu } from './user-menu'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 export async function Navbar() {
   // 在服务器端获取当前用户
@@ -66,6 +68,14 @@ export async function Navbar() {
 
           {/* 用户菜单 */}
           <div className="flex items-center space-x-4">
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/search" className="flex items-center gap-2">
+                <Search className="h-4 w-4" />
+                <span className="hidden sm:inline">搜索</span>
+              </Link>
+            </Button>
+
+            <ThemeToggle />
             {user ? (
               // 已登录: 显示用户菜单
               <UserMenu user={user} />
