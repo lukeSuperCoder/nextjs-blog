@@ -37,7 +37,8 @@ export function DashboardSidebar() {
       <nav className="px-3 pb-6">
         {menuItems.map((item) => {
           const isActive =
-            pathname === item.href || pathname.startsWith(`${item.href}/`)
+            pathname === item.href ||
+            (item.href !== '/dashboard' && pathname.startsWith(`${item.href}/`))
 
           return (
             <Link
