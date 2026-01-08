@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
 import 'highlight.js/styles/github-dark.css'
+import Image from 'next/image'
 
 import { cn } from '@/lib/utils'
 
@@ -129,12 +130,20 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           )
         },
         img({ className, alt, ...props }) {
+          const src = typeof props.src === 'string' ? props.src : ''
+          const width = Number(props.width) || 1200
+          const height = Number(props.height) || 675
+
+          if (!src) return null
+
           return (
-            <img
-              className={cn('my-6 rounded-lg', className)}
+            <Image
+              src={src}
               alt={alt ?? ''}
-              loading="lazy"
-              {...props}
+              width={width}
+              height={height}
+              sizes="100vw"
+              className={cn('my-6 h-auto w-full rounded-lg', className)}
             />
           )
         },

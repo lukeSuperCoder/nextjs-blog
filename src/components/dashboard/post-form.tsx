@@ -4,8 +4,21 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { MarkdownEditor } from '@/components/dashboard/markdown-editor'
 import { slugify } from '@/lib/slug'
+import dynamic from 'next/dynamic'
+
+const MarkdownEditor = dynamic(
+  () =>
+    import('@/components/dashboard/markdown-editor').then((mod) => mod.MarkdownEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="rounded-lg border bg-card p-4 text-sm text-muted-foreground">
+        编辑器加载中...
+      </div>
+    ),
+  }
+)
 
 type CategoryOption = {
   id: string

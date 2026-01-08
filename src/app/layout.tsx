@@ -26,6 +26,7 @@ import type { Metadata } from 'next'
 import { Providers } from '@/components/providers'
 import { ThemeProvider } from '@/components/theme-provider'
 import './globals.css'
+import { Analytics } from '@/app/analytics'
 
 /**
  * 字体配置
@@ -98,6 +99,7 @@ export default function RootLayout({
           {/* 会话提供者 - 让客户端组件可以使用 useSession */}
           <Providers>{children}</Providers>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   )

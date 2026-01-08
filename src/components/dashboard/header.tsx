@@ -5,6 +5,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { signOut } from 'next-auth/react'
 import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -41,9 +42,11 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-9 px-2">
             {user.image ? (
-              <img
+              <Image
                 src={user.image}
                 alt={user.name || user.email}
+                width={28}
+                height={28}
                 className="h-7 w-7 rounded-full object-cover"
               />
             ) : (
@@ -73,4 +76,3 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
     </header>
   )
 }
-

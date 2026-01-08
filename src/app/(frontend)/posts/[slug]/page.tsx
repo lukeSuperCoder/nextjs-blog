@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
 import { ArrowLeft } from 'lucide-react'
+import Image from 'next/image'
 
 import { prisma } from '@/lib/prisma'
 import { formatDate } from '@/lib/utils'
@@ -207,7 +208,15 @@ export default async function PostPage({ params }: PageProps) {
 
         {post.coverImage && (
           <div className="mb-8 overflow-hidden rounded-lg">
-            <img src={post.coverImage} alt={post.title} className="w-full" />
+            <div className="relative aspect-video w-full">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                sizes="(min-width: 768px) 768px, 100vw"
+                className="object-cover"
+              />
+            </div>
           </div>
         )}
 
@@ -218,9 +227,11 @@ export default async function PostPage({ params }: PageProps) {
         <footer className="mt-12 border-t pt-8">
           <div className="flex items-center gap-4">
             {post.author?.image && (
-              <img
+              <Image
                 src={post.author.image}
                 alt={post.author.name ?? ''}
+                width={48}
+                height={48}
                 className="h-12 w-12 rounded-full object-cover"
               />
             )}

@@ -18,6 +18,7 @@
  */
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { Calendar, Eye } from 'lucide-react'
 import { formatDistance } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
@@ -54,11 +55,14 @@ export function PostCard({ post }: PostCardProps) {
       {/* 封面图 (如果有) */}
       {post.coverImage && (
         <Link href={`/posts/${post.slug}`}>
-          <div className="aspect-video overflow-hidden">
-            <img
+          <div className="relative aspect-video overflow-hidden">
+            <Image
               src={post.coverImage}
               alt={post.title}
-              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              className="object-cover transition-transform group-hover:scale-105"
+              priority={false}
             />
           </div>
         </Link>
